@@ -1,0 +1,39 @@
+unit frAppAnalys;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, scControls, scGPControls, Vcl.ExtCtrls;
+
+type
+  TfAppAnalys = class(TForm)
+    scGPPanel2: TscGPPanel;
+    scGPPanel1: TscGPPanel;
+    GridPanel1: TGridPanel;
+    eCIF: TscLabel;
+    eNama: TscLabel;
+    eRekening: TscLabel;
+    eIdAntri: TscLabel;
+    ePerihal: TscLabel;
+    eLegalP: TscLabel;
+    eIdwil: TscLabel;
+    eKantor: TscLabel;
+    eStatus: TscLabel;
+    eBtrima: TscButton;
+    scLabel1: TscLabel;
+    eTglMohon: TscLabel;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  fAppAnalys: TfAppAnalys;
+
+implementation
+
+{$R *.dfm}
+
+end.

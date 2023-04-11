@@ -1,0 +1,595 @@
+﻿unit frCustApprov;
+{
+Om Swastuiastu, Namah Shivaya
+بسم الله الرحمن الرحيم
+Rahayu Sagung Dumadi
+(c) 202211 Created By Jaya Lukita
+Functinoal : Entry Register Kenaggotaan Koperasi
+Tecno;ogi  : API
+
+History Library ==
+20221128; Create
+
+}
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,Vcl.Mask
+  ,Vcl.ExtCtrls,
+  Data.DB, DateUtils,Vcl.ComCtrls
+  ,Vcl.Grids
+  ,System.Actions, Vcl.ActnList,
+
+  //FireDac
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, FireDAC.Stan.StorageBin,
+  FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Stan.StorageJSON, //20200401
+
+  //20230227
+  //API RestClient MVC Daniel
+  MVCFramework.RESTClient.Intf,
+  MVCFramework.SystemJSONUtils,
+  MVCFramework.RESTClient,
+  MVCFramework.RESTClient.Commons,
+  MVCFramework.Serializer.Commons,
+  JsonDataObjects,
+
+  //20221029 :component bawaan delphi
+  REST.Client, System.JSON, REST.Types, REST.Consts
+  ,DataSet.Serialize    //fireDacJsonMemtabl
+
+  ,Soap.EncdDecd,
+  //20230315 DelphiXE103 ---
+  System.Net.URLClient,
+  //System.NetEncoding,
+  System.Net.HttpClient, System.Net.HttpClientComponent,
+
+  AESObj,  //CryptBase, MiscObj,
+
+  Vcl.Imaging.pngimage
+//  ,Vcl.Imaging.jpeg,
+
+  //Additional Class
+  ,System.Threading, System.IOUtils, IdCoderMIME,
+
+  //FireDAC.Stan.StorageJSON,
+  //FireDAC.Comp.BatchMove, FireDAC.Comp.BatchMove.DataSet, FireDAC.Comp.BatchMove.Text,
+
+  //AlmDev Sc
+  scControls,scCalendar, scGPControls, scExtControls, scGPPagers,
+  scGPExtControls, scModernControls, scGPFontControls,
+  scAdvancedControls, scStyledForm, //scDBControls, scGPDBControls,
+
+  //Ehlib
+  //MemTableDataEh, MemTableEh,
+
+  //TMS
+  AdvMetroTaskDialog,AdvEdit,AdvCombo, ColCombo,MoneyEdit, AdvMoneyEdit,
+  AdvSmoothStepControl,
+
+  Vcl.DBCtrls,
+
+
+  //DevExpress
+  cxGraphics, cxControls, cxLookAndFeels,
+  cxStyles, cxEdit, cxDataControllerConditionalFormattingRulesManagerDialog,
+  cxVGrid, cxInplaceContainer, cxDBVGrid,
+  cxLookAndFeelPainters, cxCustomData, cxFilter, cxData,
+  cxDataStorage, cxNavigator, cxDBData, cxCurrencyEdit, cxCalendar, cxSpinEdit,
+  cxLabel,
+  cxClasses, dxmdaset, cxSplitter, cxGridLevel, cxGridCustomTableView,
+  cxGridTableView, cxGridBandedTableView, cxGridDBBandedTableView,
+  cxGridCustomView, cxGrid, cxProgressBar, dxCore,
+  cxContainer, dxWheelPicker, dxNumericWheelPicker,dxDateTimeWheelPicker,
+  cxEditRepositoryItems, cxExtEditRepositoryItems,cxGridDBTableView,
+  cxMaskEdit, cxCalc,
+
+  dxSkinsCore, dxDateRanges,dxSkinsDefaultPainters, dxPSGlbl, dxPSUtl,
+  dxPSEngn, dxPrnPg,dxBkgnd, dxWrap, dxPrnDev, dxPSCompsProvider,
+  dxPSFillPatterns,dxPSEdgePatterns, dxPSPDFExportCore, dxPSPDFExport,
+  cxDrawTextUtils,dxPSPrVwStd, dxPSPrVwAdv, dxPSPrVwRibbon,
+  dxPScxPageControlProducer,dxPScxGridLnk, dxPScxGridLayoutViewLnk,
+  dxPScxEditorProducers,dxPScxExtEditorProducers, dxPSCore, dxPScxCommon,
+  cxGridExportLink,
+
+  {last:20200401}
+  cxTextEdit, cxDropDownEdit, cxLookupEdit, cxDBLookupEdit, cxDBLookupComboBox,
+  cxCheckBox,dxLayoutContainer,cxGridInplaceEditForm, cxTimeEdit, cxDateUtils,
+
+  //Clever Internet Suite
+  clHttpRequest, clTcpClient, clTcpClientTls, clHttp,
+
+  //XLSReadWrite
+
+  //TMS Security
+
+  //CSV Project
+
+
+
+  //FastReport
+//  frxDesgn, frxClass, frxDBSet,frxBarcode,frxPrinter,
+  scDevExStyleAdapter, AdvSplitter, AdvDateTimePicker, scDBControls
+  ,scGPImages, Vcl.ExtDlgs,
+
+  iexActions, Vcl.StdActns, hyiedefs, hyieutils, iexBitmaps, iesettings,
+  iexLayers, iexRulers, iexToolbars, iexUserInteractions, imageenio,
+  imageenproc, ieview, imageenview
+  ,ImagMainFrm
+
+  ,CodeSiteLogging,CodeSiteJsonLogging
+
+  ,uRestVCL, frxClass, frxDBSet, WPCTRRich, WPTbar, WPRTEDefs, WPCTRMemo,
+  WPRuler, Wpdbrich, FireDAC.UI.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
+  FireDAC.Phys, FireDAC.Phys.FB, FireDAC.Phys.FBDef, FireDAC.VCLUI.Wait
+
+  ;
+
+
+  //MemTableDataEh, MemTableEh,
+type
+ TitTYPES=(itJPG,itPNG,itBMP);
+
+Type TEndPointVA = Record
+
+  LoanH_dDrop    : String;
+  LoanH_nPlafond : String;
+  LoanH_nAngsuran: String;
+  Status         : String;
+
+end;
+
+Const
+  FCustomer_CIF        = 0;
+  FCustomer_Nama       = 1;
+  FCustomer_Telepon    = 8;
+
+  VACustomer_No         = 0;
+  VACustomer_Status     = 1;
+  VACustomer_Nominal    = 2;
+  VACustomer_ExpDate    = 3;
+  VACustomer_Descript   = 4;
+  VACustomer_CustomerID = 5;
+  VACustomer_Message    = 9;
+
+type
+
+  TvcCustApproval = class(TForm)
+    PanelMaster: TscGPPanel;
+    scPageCentral: TscPageViewer;
+    scPageDaftar : TscPageViewerPage;
+    AdvMetroTaskDialog1: TAdvMetroTaskDialog;
+    scCabangLook: TscDBLookupComboBox;
+    scPanel23: TscPanel;
+    scLabelCharImage: TscGPCharImage;
+    CaptionLabel: TscLabel;
+    scCetakMtList: TscGPCharGlyphButton;
+    scButtonGroup: TscGPCharGlyphButton;
+    scStyledForm1: TscStyledForm;
+    dsVA_CheckSaldoRelasi: TDataSource;
+    btDaftar: TscGPCharGlyphButton;
+    btCreateBilling: TscGPCharGlyphButton;
+    FDQ: TFDQuery;
+    dsFDQLite: TDataSource;
+    cxStyleRepository1: TcxStyleRepository;
+    cxNotProcessed: TcxStyle;
+    cxNotProcessedFocused: TcxStyle;
+    cxDefault: TcxStyle;
+    styleSelected: TcxStyle;
+    cxCurrency: TcxStyle;
+    scLabel25: TscLabel;
+    scSplitView1: TscSplitView;
+    mtPinjaman: TFDMemTable;
+    mtPinjamanno_rek: TStringField;
+    mtPinjamaninfosaldo: TCurrencyField;
+    dsInfoPinjaman: TDataSource;
+    InfoPinjaman: TDataSource;
+    mtSimpanan: TFDMemTable;
+    StringField1: TStringField;
+    CurrencyField1: TCurrencyField;
+    dsAngCom: TDataSource;
+    mtAngCom: TFDMemTable;
+    mtAngComtype_anggota: TIntegerField;
+    mtAngComdescript: TStringField;
+    GridPanel1: TGridPanel;
+    cxLabel5: TcxLabel;
+    eDate1: TcxDateEdit;
+    eDate2: TcxDateEdit;
+    cxLabel7: TcxLabel;
+    scGPButton1: TscGPButton;
+    scLabel21: TscLabel;
+    gxList: TcxGridDBTableView;
+    cxGrid1Level1: TcxGridLevel;
+    cxGrid1: TcxGrid;
+    dsList: TDataSource;
+    gxListGOID: TcxGridDBColumn;
+    gxListPART_NOTICE: TcxGridDBColumn;
+    gxListID_LEGAL: TcxGridDBColumn;
+    gxListENDUSER_NO: TcxGridDBColumn;
+    gxListIDWIL_PEMOHON: TcxGridDBColumn;
+    gxListNAMA_KANTOR1: TcxGridDBColumn;
+    gxListTYPE_ANGGOTA: TcxGridDBColumn;
+    gxListSTATUS_REG: TcxGridDBColumn;
+    gxListDATE_REGISTER: TcxGridDBColumn;
+    gxListAPPROVAL: TcxGridDBColumn;
+    gxListID_ANGGOTA: TcxGridDBColumn;
+    gxListNO_REK: TcxGridDBColumn;
+    gxListIDWIL_DEBT: TcxGridDBColumn;
+    gxListGO_DATE: TcxGridDBColumn;
+    gxListCRT_DATE: TcxGridDBColumn;
+    gxListCRT_USER: TcxGridDBColumn;
+    gxListOI_ANGGOTA: TcxGridDBColumn;
+    gxReport: TcxGridDBBandedTableView;
+    gxReportGOID: TcxGridDBBandedColumn;
+    gxReportGO_DATE: TcxGridDBBandedColumn;
+    gxReportCRT_DATE: TcxGridDBBandedColumn;
+    gxReportPART_NOTICE: TcxGridDBBandedColumn;
+    gxReportIDWIL_PEMOHON: TcxGridDBBandedColumn;
+    gxReportNAMA_KANTOR1: TcxGridDBBandedColumn;
+    gxReportTYPE_ANGGOTA: TcxGridDBBandedColumn;
+    gxReportSTATUS_REG: TcxGridDBBandedColumn;
+    gxReportID_ANGGOTA: TcxGridDBBandedColumn;
+    gxReportNO_REK: TcxGridDBBandedColumn;
+    gxReportIDWIL_DEBT: TcxGridDBBandedColumn;
+    gxReportColNo: TcxGridDBBandedColumn;
+    gxReportNAMA: TcxGridDBBandedColumn;
+    gxListNAMA: TcxGridDBColumn;
+    gxListKOTALAHIR: TcxGridDBColumn;
+    gxListTGLLAHIR: TcxGridDBColumn;
+    gxListKOTA: TcxGridDBColumn;
+    gxListKECAMATAN: TcxGridDBColumn;
+    gxListDESA: TcxGridDBColumn;
+    gxListRTRW: TcxGridDBColumn;
+    dpMtList: TWPMMDataProvider;
+    mtList: TFDMemTable;
+    scPageApproved: TscPageViewerPage;
+    gxBtnApprv: TcxGridDBBandedColumn;
+    gxReportENDUSER_NO: TcxGridDBBandedColumn;
+
+
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure btCheckVAClick(Sender: TObject);
+    procedure ButtonSplitClik(Sender: TObject);
+
+    procedure frxrLabelVAGetValue(const VarName: string; var Value: Variant);
+    procedure edLoadiDKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure edLoadiDRightButtonClick(Sender: TObject);
+    procedure ListDbAnggota;
+    procedure scGPButton1Click(Sender: TObject);
+    procedure gxReportCellClick(Sender: TcxCustomGridTableView;
+      ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+      AShift: TShiftState; var AHandled: Boolean);
+
+  private
+    isLoadData : Boolean;
+    VACustomer : TEndPointVA;
+
+    { Privat page 4 Bulk csv Payment History Update }
+    //FCurrentCSVReader: TnvvCSVReader;
+    FInitialDirectory: string;
+
+    //checkBox_FieldCount_AutoDetect : boolean;
+
+    { Private declarations }
+    inProccessing: boolean;
+    inSaved      : boolean;
+    SaveStarRow  : Integer;
+
+    procedure InitialProfileClear;
+
+
+  public
+    FInitialLegal_ID: string;
+    FInitialVA_ID   : String;
+
+    ICSSession : TClassICSSession;
+
+
+    eCurrent_Date : TDateTime;
+
+  //  QueryThread : TFDQueryThread;
+  end;
+
+  const
+    NOT_BUSY = 0;
+    BUSY = 0;
+
+
+var
+  vcCustApproval: TvcCustApproval;
+  bActiveData:boolean;
+
+
+implementation
+
+{$R *.dfm}
+
+uses MainMenuApp, ufunc, MyGDate, dataModul2
+//  ,uRestVCL
+  ,cr_ksp
+  ,iexRegistryFunctions, iexWindowsFunctions
+  ,MVCFramework.DataSet.Utils, MVCFramework.FireDAC.Utils
+  , frAppAnalys;
+
+{Automatic column size adjustment}
+procedure AutoSizeGridColumn(Grid : TStringGrid; Column : integer);
+var
+  i : integer;
+  temp : integer;
+  max : integer;
+begin
+  max := 0;
+  for i := 0 to Grid.RowCount-1 do
+  begin
+    // Among the width of each row in the specified column based on Grid Canvas
+    // The maximum value is determined by the width of the column
+    temp := Grid.Canvas.TextWidth(Grid.Cells[Column, i]);
+    if temp > max then
+      max := temp;
+  end;
+  Grid.ColWidths[Column] := max + Grid.GridLineWidth + 20;
+end;
+{End of autosize Column}
+//*************************************************************
+
+
+
+procedure TvcCustApproval.FormCreate(Sender: TObject);
+
+begin
+
+  InitialProfileClear;
+
+  scPageCentral.PageIndex := 0;
+
+  CodeSite.Send('oncreate!');
+
+  ListDbAnggota;
+
+  edate1.EditValue:= now();
+  edate2.EditValue:= now();
+
+end;
+
+procedure TvcCustApproval.ListDbAnggota;
+var
+  scgpsn : String;
+  Response: IMVCRESTResponse;
+  oJson, oRaw : System.JSON.TJSONObject;
+  oArr : TJsonArray;
+  i : integer;
+begin
+  Response := ICSMVCAppRequest( MainApp.ICSSession , 'GET', '/ics/tanggota' );
+  CodeSite.Send(Response.Content);
+
+  if Response.StatusCode=200 then
+
+  begin
+    CodeSite.Send('A.AnggotaTipe-02');
+
+      if not(mtAngCom.Active) then mtAngCom.Open;
+
+      mtAngCom.EmptyDataSet;
+      mtAngCom.LoadJSONArrayFromJSONObjectProperty('data', Response.Content);  //Daniel MVC
+
+  end;
+
+end;
+
+procedure TvcCustApproval.FormShow(Sender: TObject);
+var
+  dd,mm,yy,myHour, myMin, mySec, myMilli : word;
+  bDataOk : boolean;
+  DateTimeExp : TDateTime;
+begin
+
+  bDataOk := False;
+
+  Begin
+
+
+    scPageCentral.PageIndex := 0;
+
+    //if bActiveData then
+
+    //system date database
+    eCurrent_Date := Now();
+
+    //payment history
+    DecodeDateTime( Now() , yy,mm,dd,myHour, myMin, mySec, myMilli );
+    //dBeginPayHist.Date := EncodeDateTime( yy,mm,dd, 0, 0, 0, myMilli );
+
+    DecodeDateTime( Now() , yy,mm,dd,myHour, myMin, mySec, myMilli );
+    //dEndPayHist.Date   := EncodeDateTime( yy,mm,dd,myHour, myMin, mySec, myMilli );
+
+    //billing data
+    DateTimeExp := eCurrent_Date;
+
+    DecodeDateTime( DateTimeExp , yy,mm,dd,myHour, myMin, mySec, myMilli );
+
+    scPageCentral.PageIndex  := scCetakMtList.Tag;
+
+    //Visualisation of DataLink
+    try
+      if Not DM.FDT_OFFICE.Active then
+      DM.FDT_OFFICE.Active := True;
+    finally
+      scCabangLook.ListSource  := DM.dsFDT_OFFICE;
+      scCabangLook.KeyValue    := MainApp.ICSSession.Office_id;
+
+    end;
+
+  end;
+end;
+
+
+
+procedure TvcCustApproval.frxrLabelVAGetValue(const VarName: string;
+  var Value: Variant);
+var
+  y1,m1,d1,y2,m2,d2 : word;
+  toTanggal : TDate;
+begin
+
+  if CompareText(VarName, 'Legalitas') = 0 then
+     Value := UpperCase( MainApp.msLegalCompany );
+
+  if CompareText(VarName, 'Username') = 0 then
+     Value := MainApp.msCurrentUser;
+
+end;
+
+procedure TvcCustApproval.gxReportCellClick(Sender: TcxCustomGridTableView;
+  ACellViewInfo: TcxGridTableDataCellViewInfo; AButton: TMouseButton;
+  AShift: TShiftState; var AHandled: Boolean);
+  Var
+  ARecIndex : Integer;
+begin
+ if ( gxReport.DataController.RecordCount > 0 ) Then
+	  begin
+
+	    ARecIndex := gxReport.Controller.FocusedRecord.RecordIndex;
+
+	    if (ACellViewInfo.Item = gxBtnApprv) and (AButton = mbLeft) then
+	    begin
+        with fAppAnalys do begin
+            elCif.Caption := gxReport.DataController.Values[ARecIndex,gxReportENDUSER_NO.Index];
+            elNama.Caption := gxReport.DataController.Values[ARecIndex,gxReportNAMA.Index];
+            elNomor.Caption := gxReport.DataController.Values[ARecIndex,gxReportNAMA.Index];
+            elPerihal.Caption := gxReport.DataController.Values[ARecIndex,gxReportNAMA.Index];
+            elTglMohon.Caption := gxReport.DataController.Values[ARecIndex,gxReportNAMA.Index];
+            elStatus.Caption := gxReport.DataController.Values[ARecIndex,gxReportNAMA.Index];
+        end;
+      end;
+
+
+    end;
+
+
+end;
+
+procedure TvcCustApproval.btCheckVAClick(Sender: TObject);
+
+begin
+
+  InitialProfileClear;
+
+//  ListDbAnggota;
+
+end;
+
+
+procedure TvcCustApproval.edLoadiDKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if Key = VK_RETURN then begin
+
+    InitialProfileClear;
+
+  end;
+end;
+
+procedure TvcCustApproval.edLoadiDRightButtonClick(Sender: TObject);
+begin
+
+  InitialProfileClear;
+
+end;
+
+procedure TvcCustApproval.InitialProfileClear;
+var
+  yy,mm,dd : word;
+
+begin
+
+  VACustomer.LoanH_dDrop    := '';
+  VACustomer.LoanH_nPlafond := '';
+  VACustomer.LoanH_nAngsuran:= '';
+
+
+  DecodeDate(Now(),yy,mm,dd);
+  dd := DaysInMonth( Now() );
+
+//  hFotoKTP.Picture.Graphic   := Nil;
+
+  if  Not mtList.Active then
+  mtList.Active := True;
+
+  mtList.EmptyDataSet;
+
+  isLoadData := False;
+
+
+
+end;
+
+
+
+procedure TvcCustApproval.ButtonSplitClik(Sender: TObject);
+var
+  I,P: Integer;
+
+  lOriginalCursor: TCursor;
+begin
+
+  lOriginalCursor := Screen.Cursor;
+
+  P  := TControl(Sender).Tag;
+
+  CaptionLabel.Caption := TscGPCharGlyphButton(Sender).Caption;
+
+  scLabelCharImage.ImageIndex := TscGPCharGlyphButton(Sender).GlyphOptions.Index;
+
+  scPageCentral.PageIndex  := P;
+
+end;
+
+procedure TvcCustApproval.scGPButton1Click(Sender: TObject);
+var
+  scgpsn : String;
+  Response: IMVCRESTResponse;
+  oJson: System.JSON.TJSONObject;
+  oArr : TJsonArray;
+  i : integer;
+  paramlegal, paramid : string;
+
+  OBJson, body : JsonDataObjects.TJSONObject;
+
+begin
+
+    if not(mtList.Active) then mtList.Open;
+    mtList.EmptyDataSet;
+
+    paramlegal  := MainApp.ICSSession.legal_id;  //lembaga
+    paramid     := MainApp.ICSSession.Office_id;  //id
+    codesite.send('1'+ paramlegal+'-'+paramid);
+    body := JsonDataObjects.TJsonObject.Create;
+    body.D['date1'] := eDate1.EditValue;
+    body.D['date2'] := eDate2.EditValue;
+
+    codesite.Send('/ics/List_daftarTunggu/' +paramlegal+'/'+paramid);
+    //Back to JSON Object Standar Delphi
+    OJson := TJSONObject.ParseJSONValue( body.toString ) as System.JSON.TJSONObject;
+    begin
+        Response :=
+          ICSMVCAppRequest( MainApp.ICSSession , 'POST',
+            '/ics/List_daftarTunggu/' +paramlegal+'/'+paramid, OJson);
+
+        CodeSite.Send(Response.Content);
+
+        if Response.StatusCode=200 then
+        begin
+            mtList.LoadJSONArrayFromJSONObjectProperty('data',Response.Content);  //Daniel MVC
+            dpMtList.AutoLoadData := TRUE;
+        end;
+    end;
+
+end;
+
+end.
+
